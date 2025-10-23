@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Ingresos - Sistema ULEAM</title>
+    <style>
+        /* Variables CSS */
+        :root {
+            --uleam-blue: #004AAD;
+            --uleam-blue-dark: #003880;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --text-color: #2c3e50;
+            --light-gray: #f0f2f5;
+            --white: #ffffff;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+
+        /* HEADER PRINCIPAL */
+        .main-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            padding: 5px;
+        }
+
+        .main-header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* NAVEGACIÓN HORIZONTAL */
+        .nav-horizontal {
+            background: #2c3e50;
+            padding: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+        }
+
+        .nav-horizontal::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .nav-horizontal::-webkit-scrollbar-track {
+            background: #34495e;
+        }
+
+        .nav-horizontal::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 2px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 14px;
+            gap: 10px;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav-item .icon {
+            font-size: 18px;
+        }
+
+        .nav-item:hover {
+            background: #34495e;
+            border-bottom-color: #667eea;
+        }
+
+        .nav-item.active {
+            background: #34495e;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .content {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .content h2 {
+            font-size: 28px;
+            color: var(--text-color);
+            margin-bottom: 25px;
+        }
+
+        /* BARRA DE BÚSQUEDA */
+        .search-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* BOTONES */
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-export {
+            background: #34495e;
+            color: white;
+        }
+
+        .btn-export:hover {
+            background: #2c3e50;
+            transform: translateY(-2px);
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 5px 10px;
+            transition: transform 0.2s;
+            color: #667eea;
+        }
+
+        .btn-icon:hover {
+            transform: scale(1.2);
+        }
+
+        /* TABLA */
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        .data-table thead {
+            background: #f8f9fa;
+        }
+
+        .data-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-color);
+            border-bottom: 2px solid #e1e8ed;
+            font-size: 14px;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 14px;
+        }
+
+        .data-table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* PAGINACIÓN */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-page {
+            padding: 10px 15px;
+            border: 2px solid #e1e8ed;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .btn-page:hover:not(:disabled) {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .btn-page:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: 14px;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: scaleUp 0.3s ease-out;
+        }
+
+        @keyframes scaleUp {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f2f5;
+        }
+
+        .modal-header h3 {
+            color: var(--text-color);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #95a5a6;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: var(--error-color);
+        }
+
+        .modal-body {
+            margin: 20px 0;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+
+        .info-value {
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .main-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .nav-horizontal {
+                justify-content: flex-start;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .export-buttons {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .pagination {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="customNotification" style="
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 25px;
+        background-color: #333;
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        z-index: 2000;
+        opacity: 0;
+        transition: opacity 0.4s, bottom 0.4s;
+        font-size: 15px;
+        font-weight: 500;">
+        </div>
+    <!-- Encabezado Principal -->
+    <header class="main-header">
+        <div class="header-left">
+            <img src="logo-uleam.png" alt="ULEAM" class="header-logo">
+            <h1>Sistema de Control Vehicular</h1>
+        </div>
+        <div class="header-right">
+            <span class="user-name">👤 Admin Usuario</span>
+            <button onclick="logout()" class="btn-logout">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <!-- Navegación Horizontal -->
+    <nav class="nav-horizontal">
+        <a href="dashboard.html" class="nav-item">
+            <span class="icon"></span> Dashboard
+        </a>
+        <a href="registro-ingreso.html" class="nav-item">
+            <span class="icon"></span> Registrar Ingreso
+        </a>
+        <a href="consulta-ingresos.html" class="nav-item active">
+            <span class="icon"></span> Consultar Ingresos
+        </a>
+        <a href="registro-salida.html" class="nav-item">
+            <span class="icon"></span> Registrar Salida
+        </a>
+        <a href="gestion-usuarios.html" class="nav-item">
+            <span class="icon"></span> Gestión de Usuarios
+        </a>
+        <a href="reportes.html" class="nav-item">
+            <span class="icon"></span> Reportes
+        </a>
+        <a href="vehiculos-registrados.html" class="nav-item">
+            <span class="icon"></span> Vehículos Registrados
+        </a>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="content">
+        <h2>Consulta de Ingresos</h2>
+        
+        <!-- Filtros de búsqueda -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchPlaca" placeholder="Buscar por placa..." class="search-input">
+                <input type="date" id="searchFecha" class="search-input">
+                <button onclick="buscarIngresos()" class="btn btn-primary">Buscar</button>
+                <button onclick="limpiarBusqueda()" class="btn btn-secondary">Limpiar</button>
+            </div>
+            
+            <div class="export-buttons">
+                <button onclick="exportarPDF()" class="btn btn-export">PDF</button>
+                <button onclick="exportarExcel()" class="btn btn-export">Excel</button>
+            </div>
+        </div>
+
+        <!-- Tabla de registros -->
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Placa</th>
+                        <th>Tipo</th>
+                        <th>ID Conductor</th>
+                        <th>Hora Ingreso</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tableConsulta">
+                    <tr>
+                        <td>1</td>
+                        <td><strong>ABC-123</strong></td>
+                        <td>Auto</td>
+                        <td>1234567890</td>
+                        <td>14:35:20</td>
+                        <td><span class="badge badge-success">Dentro</span></td>
+                        <td>
+                            <button class="btn-icon" onclick="verDetalle(1)" title="Ver detalles">👁</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><strong>XYZ-789</strong></td>
+                        <td>Moto</td>
+                        <td>9876543210</td>
+                        <td>13:20:45</td>
+                        <td><span class="badge badge-danger">Fuera</span></td>
+                        <td>
+                            <button class="btn-icon" onclick="verDetalle(2)" title="Ver detalles">👁</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><strong>DEF-456</strong></td>
+                        <td>Camioneta</td>
+                        <td>5647382910</td>
+                        <td>12:15:30</td>
+                        <td><span class="badge badge-success">Dentro</span></td>
+                        <td>
+                            <button class="btn-icon" onclick="verDetalle(3)" title="Ver detalles">👁</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><strong>GHI-321</strong></td>
+                        <td>Auto</td>
+                        <td>1122334455</td>
+                        <td>11:45:10</td>
+                        <td><span class="badge badge-danger">Fuera</span></td>
+                        <td>
+                            <button class="btn-icon" onclick="verDetalle(4)" title="Ver detalles">👁</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td><strong>JKL-654</strong></td>
+                        <td>Moto</td>
+                        <td>9988776655</td>
+                        <td>10:30:00</td>
+                        <td><span class="badge badge-success">Dentro</span></td>
+                        <td>
+                            <button class="btn-icon" onclick="verDetalle(5)" title="Ver detalles">👁</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination">
+           <span class="page-info" id="pageInfo">Página 1</span>
+        </div>
+    </main>
+
+    <!-- Modal de detalles -->
+    <div class="modal" id="modalDetalle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detalles del Registro</h3>
+                <button class="close-btn" onclick="cerrarModal()">✖</button>
+            </div>
+            <div class="modal-body">
+                <div class="info-row">
+                    <span class="info-label">N° Registro:</span>
+                    <span class="info-value" id="detalle-numero">#001</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Placa:</span>
+                    <span class="info-value" id="detalle-placa">ABC-123</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Tipo Vehículo:</span>
+                    <span class="info-value" id="detalle-tipo">Auto</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">ID Conductor:</span>
+                    <span class="info-value" id="detalle-id">1234567890</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Hora Ingreso:</span>
+                    <span class="info-value" id="detalle-hora">14:35:20</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Fecha:</span>
+                    <span class="info-value" id="detalle-fecha">22/10/2025</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Estado:</span>
+                    <span class="info-value" id="detalle-estado">
+                        <span class="badge badge-success">Dentro</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+    const allRecords = [
+        { id: 1, placa: 'ABC-123', tipo: 'Auto', idConductor: '1234567890', hora: '14:35:20', estado: 'Dentro', fecha: '22/10/2025' },
+        { id: 2, placa: 'XYZ-789', tipo: 'Moto', idConductor: '9876543210', hora: '13:20:45', estado: 'Fuera', fecha: '22/10/2025' },
+        { id: 3, placa: 'DEF-456', tipo: 'Camioneta', idConductor: '5647382910', hora: '12:15:30', estado: 'Dentro', fecha: '21/10/2025' },
+        { id: 4, placa: 'GHI-321', tipo: 'Auto', idConductor: '1122334455', hora: '11:45:10', estado: 'Fuera', fecha: '21/10/2025' },
+        { id: 5, placa: 'JKL-654', tipo: 'Moto', idConductor: '9988776655', hora: '10:30:00', estado: 'Dentro', fecha: '20/10/2025' }
+    ];
+
+    let currentRecords = [...allRecords];
+    let paginaActual = 1;
+
+    // Función para generar una fila de tabla (<tr>)
+    function createTableRow(record) {
+        const estadoClase = record.estado === 'Dentro' ? 'badge-success' : 'badge-danger';
+        const row = `
+            <tr>
+                <td>${record.id}</td>
+                <td><strong>${record.placa}</strong></td>
+                <td>${record.tipo}</td>
+                <td>${record.idConductor}</td>
+                <td>${record.hora}</td>
+                <td><span class="badge ${estadoClase}">${record.estado}</span></td>
+                <td>
+                    <button class="btn-icon" onclick="verDetalle(${record.id})" title="Ver detalles">👁</button>
+                </td>
+            </tr>
+        `;
+        return row;
+    }
+
+    // Función principal para renderizar la tabla
+    function renderTable(records) {
+        const tableBody = document.getElementById('tableConsulta');
+        tableBody.innerHTML = '';
+
+        if (records.length === 0) {
+            const noRecordsRow = `
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 20px; color: var(--error-color);">
+                        Placa(s) no encontrada(s) con los criterios de búsqueda.
+                    </td>
+                </tr>
+            `;
+            tableBody.innerHTML = noRecordsRow;
+            return;
+        }
+
+        records.forEach(record => {
+            tableBody.innerHTML += createTableRow(record);
+        });
+    }
+
+    function mostrarNotificacion(mensaje) {
+        const notifElement = document.getElementById('customNotification');
+        notifElement.textContent = mensaje;
+        notifElement.style.opacity = '1';
+        notifElement.style.bottom = '20px';
+        setTimeout(() => {
+            notifElement.style.opacity = '0';
+            notifElement.style.bottom = '0px';
+        }, 3000);
+    }
+
+    // --- FUNCIÓN CLAVE PARA MOSTRAR DETALLES EN EL MODAL ---
+    function verDetalle(id) {
+        const registro = allRecords.find(r => r.id === id);
+        
+        if (registro) {
+            document.getElementById('detalle-numero').textContent = `#${String(registro.id).padStart(3, '0')}`;
+            document.getElementById('detalle-placa').textContent = registro.placa;
+            document.getElementById('detalle-tipo').textContent = registro.tipo;
+            document.getElementById('detalle-id').textContent = registro.idConductor;
+            document.getElementById('detalle-hora').textContent = registro.hora;
+            document.getElementById('detalle-fecha').textContent = registro.fecha; 
+            
+            const estadoBadge = registro.estado === 'Dentro' 
+                ? '<span class="badge badge-success">Dentro</span>' 
+                : '<span class="badge badge-danger">Fuera</span>';
+            document.getElementById('detalle-estado').innerHTML = estadoBadge;
+            
+            document.getElementById('modalDetalle').classList.add('show');
+        } else {
+             alert('Registro de detalle no encontrado.');
+        }
+    }
+
+    // Cerrar modal
+    function cerrarModal() {
+        document.getElementById('modalDetalle').classList.remove('show');
+    }
+
+    // Cerrar modal al hacer clic fuera
+    document.getElementById('modalDetalle').addEventListener('click', function(e) {
+        if (e.target === this) {
+            cerrarModal();
+        }
+    });
+
+    // Buscar ingresos (mantiene la lógica de filtrado)
+    function buscarIngresos() {
+        const placaInput = document.getElementById('searchPlaca').value.trim().toUpperCase();
+        const fechaInput = document.getElementById('searchFecha').value;
+
+        if (placaInput === '' && fechaInput === '') {
+            mostrarNotificacion('⚠ Por favor ingrese un criterio de búsqueda (Placa y/o Fecha).');
+            return;
+        }
+
+        let resultadosFiltrados = allRecords.filter(record => {
+            let coincidePlaca = true;
+            let coincideFecha = true;
+
+            if (placaInput) {
+                coincidePlaca = record.placa.toUpperCase().includes(placaInput);
+            }
+
+            if (fechaInput) {
+                const [year, month, day] = fechaInput.split('-');
+                const formattedDate = `${day}/${month}/${year}`;
+                coincideFecha = record.fecha === formattedDate;
+            }
+
+            return coincidePlaca && coincideFecha;
+        });
+        
+        currentRecords = resultadosFiltrados;
+        paginaActual = 1;
+        renderTable(currentRecords);
+        actualizarPaginacion();
+        
+        // alert(`✓ Búsqueda finalizada. ${resultadosFiltrados.length} registro(s) encontrado(s).`);
+    }
+
+    // Limpiar búsqueda
+    function limpiarBusqueda() {
+        document.getElementById('searchPlaca').value = '';
+        document.getElementById('searchFecha').value = '';
+        currentRecords = allRecords;
+        paginaActual = 1;
+        renderTable(currentRecords);
+        actualizarPaginacion();
+        // alert('✓ Filtros limpiados. Mostrando todos los registros.');
+    }
+
+    // Exportar a PDF (Funciones simuladas)
+    function exportarPDF() {
+        mostrarNotificacion('📄 Exportando a PDF...\nTotal de registros a exportar: ' + currentRecords.length);
+    }
+
+    // Exportar a Excel (Funciones simuladas)
+    function exportarExcel() {
+        mostrarNotificacion('📊 Exportando a Excel...\nTotal de registros a exportar: ' + currentRecords.length);
+    }
+    
+    // Función para actualizar la información de paginación (Simplificada)
+    function actualizarPaginacion() {
+        const totalRegistros = currentRecords.length;
+        document.getElementById('pageInfo').textContent = 
+            `Mostrando ${totalRegistros} registro(s) en total`;
+    }
+    
+    // Función de inicialización
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar la tabla con todos los registros
+        renderTable(allRecords);
+        
+        // Inicializar paginación
+        actualizarPaginacion();
+        
+        // Lógica de usuario
+        const usuarioActivo = 'Admin ULEAM'; // Valor de ejemplo
+        const userNameElement = document.querySelector('.user-name');
+        if (userNameElement && usuarioActivo) {
+            userNameElement.textContent = `👤 ${usuarioActivo}`;
+        }
+
+        // Establecer fecha de hoy por defecto (Asume que "22/10/2025" es la fecha actual para el ejemplo)
+        const fechaActual = '2025-10-22'; 
+        document.getElementById('searchFecha').value = fechaActual; 
+    });
+
+    function cambiarPagina(direccion) {
+        alert("La paginación avanzada no está implementada en este ejemplo. Usa los filtros de búsqueda.");
+    }
+    
+    function logout() {
+        if (confirm('¿Está seguro de cerrar sesión?')) {
+            localStorage.removeItem('usuarioActivo');
+            localStorage.removeItem('recordarSesion');
+            alert('✓ Sesión cerrada exitosamente');
+            // window.location.href = 'login.html'; // Descomentar para redireccionar
+        }
+    }
+    </script>
+    </body>
+    </html>

@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Ingreso - Sistema ULEAM</title>
+    <style>
+        /* Variables CSS */
+        :root {
+            --uleam-blue: #004AAD;
+            --uleam-blue-dark: #003880;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --text-color: #2c3e50;
+            --light-gray: #f0f2f5;
+            --white: #ffffff;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+
+        /* HEADER PRINCIPAL */
+        .main-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            padding: 5px;
+        }
+
+        .main-header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* NAVEGACIÓN HORIZONTAL */
+        .nav-horizontal {
+            background: #2c3e50;
+            padding: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+        }
+
+        .nav-horizontal::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .nav-horizontal::-webkit-scrollbar-track {
+            background: #34495e;
+        }
+
+        .nav-horizontal::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 2px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 14px;
+            gap: 10px;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav-item .icon {
+            font-size: 18px;
+        }
+
+        .nav-item:hover {
+            background: #34495e;
+            border-bottom-color: #667eea;
+        }
+
+        .nav-item.active {
+            background: #34495e;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .content {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .content h2 {
+            font-size: 28px;
+            color: var(--text-color);
+            margin-bottom: 25px;
+        }
+
+        /* FORMULARIO */
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: var(--error-color);
+            background: #fff5f5;
+        }
+
+        .form-group input.valid {
+            border-color: var(--success-color);
+            background: #f0fff4;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        /* BOTONES */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        /* TABLA DE REGISTROS */
+        .recent-records {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .recent-records h3 {
+            margin-bottom: 20px;
+            color: var(--text-color);
+            font-size: 18px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead {
+            background: #f8f9fa;
+        }
+
+        .data-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-color);
+            border-bottom: 2px solid #e1e8ed;
+            font-size: 14px;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 14px;
+        }
+
+        .data-table tbody tr {
+            transition: background 0.2s;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .data-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .text-center {
+            text-align: center;
+            color: #95a5a6;
+            font-style: italic;
+        }
+
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        /* NOTIFICACIÓN DE ÉXITO */
+        .success-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            animation: slideInRight 0.4s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .success-notification.show {
+            display: block;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .main-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .nav-horizontal {
+                justify-content: flex-start;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .data-table {
+                font-size: 12px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Encabezado Principal -->
+    <header class="main-header">
+        <div class="header-left">
+            <img src="logo-uleam.png" alt="ULEAM" class="header-logo">
+            <h1>Sistema de Control Vehicular</h1>
+        </div>
+        <div class="header-right">
+            <span class="user-name">👤 Admin Usuario</span>
+            <button onclick="logout()" class="btn-logout">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <!-- Navegación Horizontal -->
+    <nav class="nav-horizontal">
+        <a href="dashboard.html" class="nav-item">
+            <span class="icon"></span> Dashboard
+        </a>
+        <a href="registro-ingreso.html" class="nav-item active">
+            <span class="icon"></span> Registrar Ingreso
+        </a>
+        <a href="consulta-ingresos.html" class="nav-item">
+            <span class="icon"></span> Consultar Ingresos
+        </a>
+        <a href="registro-salida.html" class="nav-item">
+            <span class="icon"></span> Registrar Salida
+        </a>
+        <a href="gestion-usuarios.html" class="nav-item">
+            <span class="icon"></span> Gestión de Usuarios
+        </a>
+        <a href="reportes.html" class="nav-item">
+            <span class="icon"></span> Reportes
+        </a>
+        <a href="vehiculos-registrados.html" class="nav-item">
+            <span class="icon"></span> Vehículos Registrados
+        </a>
+    </nav>
+
+    <!-- Notificación de éxito -->
+    <div class="success-notification" id="successNotification">
+        ✓ Ingreso registrado exitosamente
+    </div>
+
+    <!-- Contenido Principal -->
+    <main class="content">
+        <h2>Registro de Ingreso Vehicular</h2>
+        
+        <div class="form-container">
+            <form id="ingresoForm">
+                <div class="form-group">
+                    <label for="idConductor">ID del Conductor *</label>
+                    <input type="text" id="idConductor" name="idConductor" required 
+                           placeholder="Ej: 1234567890 o carnet">
+                    <span class="error-message" id="idError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipoVehiculo">Tipo de Vehículo *</label>
+                    <select id="tipoVehiculo" name="tipoVehiculo" required>
+                        <option value="">Seleccione un tipo</option>
+                        <option value="Auto">Auto</option>
+                        <option value="Moto">Moto</option>
+                        <option value="Camioneta">Camioneta</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                    <span class="error-message" id="tipoError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="placa">Placa del Vehículo *</label>
+                    <input type="text" id="placa" name="placa" required 
+                           placeholder="Ej: ABC-1234" style="text-transform: uppercase;">
+                    <span class="error-message" id="placaError"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">
+                        <span>✓</span> Registrar Ingreso
+                    </button>
+                    <button type="reset" class="btn btn-secondary">
+                        <span>✗</span> Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tabla de registros recientes -->
+        <div class="recent-records">
+            <h3>Últimos Ingresos Registrados</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tipo</th>
+                        <th>Placa</th>
+                        <th>Hora</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="tableIngresos">
+                    <tr>
+                        <td colspan="5" class="text-center">No hay registros aún</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // Función para cerrar sesión
+        function logout() {
+            if (confirm('¿Está seguro de cerrar sesión?')) {
+                localStorage.removeItem('usuarioActivo');
+                localStorage.removeItem('recordarSesion');
+                alert('✓ Sesión cerrada exitosamente');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Validar cédula ecuatoriana
+        function validarCedulaEcuatoriana(cedula) {
+            cedula = cedula.trim();
+            
+            if (cedula.length !== 10) return false;
+            if (!/^\d+$/.test(cedula)) return false;
+            
+            const provincia = parseInt(cedula.substr(0, 2));
+            if (provincia < 1 || provincia > 24) return false;
+            
+            const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+            const digitoVerificador = parseInt(cedula.charAt(9));
+            let suma = 0;
+            
+            for (let i = 0; i < 9; i++) {
+                let valor = parseInt(cedula.charAt(i)) * coeficientes[i];
+                if (valor >= 10) valor -= 9;
+                suma += valor;
+            }
+            
+            const resultado = suma % 10 === 0 ? 0 : 10 - (suma % 10);
+            return resultado === digitoVerificador;
+        }
+
+        // Mostrar error
+        function showError(input, message) {
+            input.classList.remove('valid');
+            input.classList.add('error');
+            const errorElement = document.getElementById(input.id + 'Error');
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+
+        // Mostrar éxito
+        function showSuccess(input) {
+            input.classList.remove('error');
+            input.classList.add('valid');
+            const errorElement = document.getElementById(input.id + 'Error');
+            errorElement.classList.remove('show');
+        }
+
+        // Limpiar validación
+        function clearValidation(input) {
+            input.classList.remove('error', 'valid');
+            const errorElement = document.getElementById(input.id + 'Error');
+            errorElement.classList.remove('show');
+        }
+
+        // Agregar ingreso a la tabla
+        function agregarIngresoTabla(id, tipo, placa) {
+            const tableBody = document.getElementById('tableIngresos');
+            const hora = new Date().toLocaleTimeString('es-EC', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+
+            // Si la tabla está vacía, limpiar el mensaje
+            if (tableBody.querySelector('.text-center')) {
+                tableBody.innerHTML = '';
+            }
+            
+            const row = tableBody.insertRow(0);
+            row.innerHTML = `
+                <td>${id}</td>
+                <td>${tipo}</td>
+                <td><strong>${placa}</strong></td>
+                <td>${hora}</td>
+                <td><span class="badge badge-success">Dentro</span></td>
+            `;
+
+            // Animación de la nueva fila
+            row.style.animation = 'fadeIn 0.5s ease-out';
+        }
+
+        // Mostrar notificación de éxito
+        function showSuccessNotification() {
+            const notification = document.getElementById('successNotification');
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Inicialización del formulario
+        document.addEventListener('DOMContentLoaded', function() {
+            const usuarioActivo = localStorage.getItem('usuarioActivo');
+            const userNameElement = document.querySelector('.user-name');
+            
+            if (userNameElement && usuarioActivo) {
+                userNameElement.textContent = `👤 ${usuarioActivo}`;
+            }
+
+            const ingresoForm = document.getElementById('ingresoForm');
+            const idConductor = document.getElementById('idConductor');
+            const tipoVehiculo = document.getElementById('tipoVehiculo');
+            const placa = document.getElementById('placa');
+
+            // Validación en tiempo real - ID
+            // Validar solo números y 10 dígitos para ID del conductor
+            idConductor.addEventListener('input', function() {
+                // Reemplazar cualquier carácter que no sea número
+                this.value = this.value.replace(/\D/g, '');
+                
+                 // Limitar a 10 caracteres como máximo
+                 if (this.value.length > 10) {
+                    this.value = this.value.slice(0, 10);
+                }
+                
+                const value = this.value.trim();
+                
+                if (!value) {
+                    clearValidation(this);
+                } else if (value.length < 10) {
+                    showError(this, 'El ID debe tener 10 dígitos');
+                } else if (value.length === 10) {
+                    showSuccess(this);
+        }
+    });
+
+            // Validación en tiempo real - Tipo
+            tipoVehiculo.addEventListener('change', function() {
+                if (this.value) {
+                    showSuccess(this);
+                } else {
+                    clearValidation(this);
+                }
+            });
+
+            // Validación en tiempo real - Placa
+            placa.addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+                const value = this.value.trim();
+                const placaRegex = /^[A-Z]{3}-[0-9]{3,4}$/;
+                
+                if (!value) {
+                    clearValidation(this);
+                } else if (placaRegex.test(value)) {
+                    showSuccess(this);
+                } else {
+                    showError(this, 'Formato incorrecto. Use: ABC-123 o ABC-1234');
+                }
+            });
+
+            // Submit del formulario
+            ingresoForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const idValue = idConductor.value.trim();
+                const tipoValue = tipoVehiculo.value;
+                const placaValue = placa.value.trim().toUpperCase();
+                
+                let isValid = true;
+
+                // Validar ID
+                    // Validar ID
+                    if (!idValue) {
+                        showError(idConductor, 'El ID es obligatorio');
+                        isValid = false;
+                    } else if (!/^\d{10}$/.test(idValue)) {
+                        showError(idConductor, 'El ID debe tener exactamente 10 números');
+                        isValid = false;
+                    }
+
+
+                // Validar tipo
+                if (!tipoValue) {
+                    showError(tipoVehiculo, 'Debe seleccionar un tipo de vehículo');
+                    isValid = false;
+                }
+
+                // Validar placa
+                const placaRegex = /^[A-Z]{3}-[0-9]{3,4}$/;
+                if (!placaValue) {
+                    showError(placa, 'La placa es obligatoria');
+                    isValid = false;
+                } else if (!placaRegex.test(placaValue)) {
+                    showError(placa, 'Formato incorrecto. Use: ABC-123 o ABC-1234');
+                    isValid = false;
+                }
+                
+                if (isValid) {
+                    agregarIngresoTabla(idValue, tipoValue, placaValue);
+                    showSuccessNotification();
+                    this.reset();
+                    
+                    // Limpiar clases de validación
+                    idConductor.classList.remove('valid', 'error');
+                    tipoVehiculo.classList.remove('valid', 'error');
+                    placa.classList.remove('valid', 'error');
+                }
+            });
+
+            // Reset del formulario
+            ingresoForm.addEventListener('reset', function() {
+                setTimeout(() => {
+                    document.querySelectorAll('.error-message').forEach(el => {
+                        el.classList.remove('show');
+                    });
+                    document.querySelectorAll('input, select').forEach(el => {
+                        el.classList.remove('valid', 'error');
+                    });
+                }, 0);
+            });
+        });
+    </script>
+</body>
+</html>
