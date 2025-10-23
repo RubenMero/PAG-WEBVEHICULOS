@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios - Sistema ULEAM</title>
+    <style>
+        /* Variables CSS (Manteniendo tus variables originales y las nuevas) */
+        :root {
+            --uleam-blue: #004AAD;
+            --uleam-blue-dark: #003880;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --warning-color: #f59e0b;
+            --text-color: #2c3e50;
+            --light-gray: #f0f2f5;
+            --white: #ffffff;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+
+        /* HEADER PRINCIPAL (Estilo de la segunda imagen) */
+        .main-header {
+            background: var(--primary-gradient); /* Ajuste de gradiente para el header */
+            color: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            padding: 5px;
+            object-fit: contain;
+        }
+
+        .main-header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        /* Botones de usuario en el header */
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-logout {
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;           
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* NAVEGACIÓN HORIZONTAL (Estilo de la segunda imagen) */
+        .nav-horizontal {
+            background: #2c3e50;
+            padding: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            overflow-x: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 14px;
+            gap: 10px;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav-item:hover {
+            background: #34495e;
+        }
+
+        .nav-item.active {
+            background: #34495e;
+            border-bottom-color: var(--primary-gradient); /* Usar gradiente para el indicador activo */
+            font-weight: 600;
+        }
+
+        .nav-item.active .icon {
+            color: #667eea;
+        }
+        
+        .nav-item .icon {
+            font-size: 18px;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        main {
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1400px; /* Ancho ajustado para mejor visualización de tabla */
+            margin: 0 auto;
+            /* La caja principal del contenido ya NO tiene un fondo blanco, se usa el `table-container` */
+        }
+
+        h2 {
+            font-size: 28px;
+            color: var(--text-color);
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        /* TOOLBAR (Contiene botón y filtro, pero lo adaptamos para el botón principal) */
+        .toolbar {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-start; /* Alineado a la izquierda */
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        /* BOTONES (Estilo del primer código para el botón principal) */
+        .btn {
+            background: #667eea;
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px; /* Un poco más grande para el botón principal */
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success { background: var(--success-color); color: white; }
+        .btn-success:hover { background: #27ae60; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn-secondary:hover { background: #7f8c8d; }
+
+
+        /* TABLA (Estilo del primer código mejorado para la segunda imagen) */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            padding: 0; /* Quitamos padding aquí para que la tabla ocupe el contenedor */
+        }
+        
+        /* Ajustando tabla para que parezca la de la primera imagen pero con el estilo de fondo de la segunda */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            border-bottom: 1px solid #e1e8ed;
+            padding: 15px 20px;
+            text-align: center; /* Alineación centrada para datos, como en tu primer código */
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--text-color);
+            text-align: center; /* Títulos centrados */
+            border-bottom: 2px solid #e1e8ed;
+        }
+
+        tr:hover {
+            background-color: #f3f6fa;
+        }
+
+        /* BADGES */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-success { background-color: #d4edda; color: #155724; }
+        .badge-danger { background-color: #f8d7da; color: #721c24; }
+        .badge-admin { background-color: #e8daff; color: #5a1e8c; }
+        .badge-warning { background-color: #fff3cd; color: #856404; }
+        .badge-info { background-color: #d1ecf1; color: #0c5460; }
+
+
+        /* BOTONES DE ACCIÓN (Estilo del primer código) */
+        .btn-icon {
+            border: none;
+            cursor: pointer;
+            background: transparent;
+            font-size: 18px;
+            color: var(--uleam-blue-dark);
+            transition: transform 0.2s, color 0.2s;
+            padding: 0 5px;
+        }
+
+        .btn-icon:hover {
+            transform: scale(1.2);
+            color: #667eea;
+        }
+        
+        /* MODAL Y FORMULARIO (Estilos mejorados para la segunda imagen) */
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            width: 450px;
+            box-shadow: var(--shadow-hover);
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--uleam-blue-dark);
+            border-bottom: 1px solid #e1e8ed;
+            padding-bottom: 10px;
+        }
+        
+        /* Ocultar el título interno del modal para usar el modal-header */
+        .modal-header h2 { margin: 0; font-size: 20px;}
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Estilos de error para el formulario */
+        .form-group input.error, .form-group select.error {
+            border-color: var(--error-color);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 12px;
+            margin-top: 5px;
+            display: block; /* Aseguramos que se muestre como bloque */
+        }
+        
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end; /* Alinear a la derecha los botones del modal */
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-left">
+            <img src="logo-uleam.png" alt="ULEAM" class="header-logo">
+            <h1>Sistema de Control Vehicular</h1>
+        </div>
+        <div class="header-right">
+            <span class="user-name">👤 admin@uleam.edu.ec</span>
+            <button onclick="logout()" class="btn-logout">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <nav class="nav-horizontal">
+        <a href="dashboard.html" class="nav-item"><span class="icon"></span> Dashboard</a>
+        <a href="registro-ingreso.html" class="nav-item"><span class="icon"></span> Registrar Ingreso</a>
+        <a href="consulta-ingresos.html" class="nav-item"><span class="icon"></span> Consultar Ingresos</a>
+        <a href="registro-salida.html" class="nav-item"><span class="icon"></span> Registrar Salida</a>
+        <a href="gestion-usuarios.html" class="nav-item active"><span class="icon"></span> Gestión de Usuarios</a>
+        <a href="reportes.html" class="nav-item"><span class="icon"></span> Reportes</a>
+        <a href="vehiculos-registrados.html" class="nav-item"><span class="icon"></span> Vehículos Registrados</a>
+    </nav>
+
+    <main>
+        <div class="container">
+            <h2>Administrar Usuarios</h2>
+            
+            <div class="toolbar">
+                <button class="btn" id="btnNuevoUsuario">Nuevo Usuario</button>
+                </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre Completo</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Fecha Registro</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaUsuarios">
+                        </tbody>
+                </table>
+                </div>
+        </div>
+    </main>
+
+    <div class="modal" id="modalUsuario">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Registrar Usuario</h2>
+                </div>
+            
+            <form id="usuarioForm">
+                <div class="form-group">
+                    <label for="nombreCompleto">Nombre Completo *</label>
+                    <input type="text" id="nombreCompleto" required placeholder="Ej: Juan Pérez García">
+                    <small class="error-message" id="nombreError"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="emailUsuario">Correo Institucional *</label>
+                    <input type="email" id="emailUsuario" required placeholder="usuario@uleam.edu.ec">
+                    <small class="error-message" id="emailUsuarioError"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="rolUsuario">Rol *</label>
+                    <select id="rolUsuario" required>
+                        <option value="">Seleccione un rol</option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Supervisor">Supervisor</option>
+                        <option value="Guardia">Guardia</option>
+                    </select>
+                    <small class="error-message" id="rolError"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordUsuario">Contraseña *</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="passwordUsuario" required placeholder="Mínimo 8 caracteres">
+                        <button type="button" id="togglePassword" class="toggle-password">👁️</button>
+                    </div>
+                    <small class="error-message" id="passwordUsuarioError"></small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="btnCancelar">Cancelar</button>
+                    <button type="submit" class="btn">Guardar Usuario</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Función de simulación para cerrar sesión (si lo necesitas)
+        function logout() {
+            if (confirm('¿Está seguro de cerrar sesión?')) {
+                localStorage.removeItem('usuarioActivo');
+                localStorage.removeItem('recordarSesion');
+                alert('✓ Sesión cerrada exitosamente');
+                window.location.href = 'login.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('modalUsuario');
+            const btnNuevo = document.getElementById('btnNuevoUsuario');
+            const btnCancelar = document.getElementById('btnCancelar');
+            const form = document.getElementById('usuarioForm');
+            const tabla = document.getElementById('tablaUsuarios');
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('passwordUsuario');
+            
+            // Datos iniciales de ejemplo
+            let usuarios = [
+                { id: 1, nombre: 'Ana García', email: 'agarcia@uleam.edu.ec', rol: 'Administrador', estado: 'Activo', fechaRegistro: '2024-05-10 09:30:00' },
+                { id: 2, nombre: 'Luis Flores', email: 'lflores@uleam.edu.ec', rol: 'Supervisor', estado: 'Activo', fechaRegistro: '2024-05-11 14:20:00' },
+                { id: 3, nombre: 'Carlos Mena', email: 'cmena@uleam.edu.ec', rol: 'Guardia', estado: 'Inactivo', fechaRegistro: '2024-05-12 11:05:00' }
+            ];
+
+            let modoEdicion = false;
+            let usuarioEditandoId = null;
+
+            // --- Funciones de Utilidad ---
+            
+            function validarEmailInstitucional(email) {
+                return /^[a-zA-Z0-9._%+-]+@uleam\.edu\.ec$/.test(email);
+            }
+
+            // Función de error mejorada para usar el elemento <small>
+            function showError(input, mensaje) {
+                input.classList.add('error');
+                let small = input.parentElement.querySelector('small');
+                // Si el input está dentro del password-wrapper, busca el small fuera de él.
+                if (input.parentElement.classList.contains('password-wrapper')) {
+                    small = input.parentElement.parentElement.querySelector('small');
+                }
+                
+                if (!small) {
+                    // Crea un nuevo elemento small si no existe
+                    small = document.createElement('small');
+                    small.className = 'error-message';
+                    input.parentElement.appendChild(small);
+                }
+                small.textContent = mensaje;
+            }
+
+            function showSuccess(input) {
+                input.classList.remove('error');
+                let small = input.parentElement.querySelector('small');
+                if (input.parentElement.classList.contains('password-wrapper')) {
+                    small = input.parentElement.parentElement.querySelector('small');
+                }
+                if (small) small.textContent = '';
+            }
+            
+            function limpiarErrores() {
+                // Iterar sobre todos los campos del formulario para limpiar la clase 'error' y los mensajes
+                form.querySelectorAll('input, select').forEach(input => {
+                    input.classList.remove('error');
+                });
+                form.querySelectorAll('.error-message').forEach(small => {
+                    small.textContent = '';
+                });
+            }
+
+
+            function getBadgeRol(rol) {
+                switch (rol) {
+                    case 'Administrador': return '<span class="badge badge-admin">Administrador</span>';
+                    case 'Supervisor': return '<span class="badge badge-warning">Supervisor</span>';
+                    case 'Guardia': return '<span class="badge badge-info">Guardia</span>';
+                    default: return rol;
+                }
+            }
+
+            function getBadgeEstado(estado) {
+                const badgeClass = estado === 'Activo' ? 'badge-success' : 'badge-danger';
+                return `<span class="badge ${badgeClass}">${estado}</span>`;
+            }
+
+            function renderizarTabla() {
+                tabla.innerHTML = ''; // Limpiar la tabla
+                usuarios.forEach(usuario => {
+                    const fila = document.createElement('tr');
+                    fila.setAttribute('data-id', usuario.id);
+                    fila.setAttribute('data-rol', usuario.rol);
+                    fila.setAttribute('data-estado', usuario.estado);
+                    
+                    fila.innerHTML = `
+                        <td>${usuario.nombre}</td>
+                        <td>${usuario.email}</td>
+                        <td>${getBadgeRol(usuario.rol)}</td>
+                        <td>${getBadgeEstado(usuario.estado)}</td>
+                        <td>${new Date(usuario.fechaRegistro).toLocaleString('es-EC', { hour12: false })}</td>
+                        <td>
+                            <button class="btn-icon" onclick="editarUsuario(${usuario.id})">✏️</button>
+                            <button class="btn-icon" onclick="cambiarEstado(${usuario.id})">🔄</button>
+                            <button class="btn-icon btn-danger" onclick="eliminarUsuario(${usuario.id})">🗑️</button>
+                        </td>
+                    `;
+                    tabla.appendChild(fila);
+                });
+            }
+
+            // --- Control de Modal ---
+
+            function cerrarModal() {
+                modal.classList.remove('show');
+                form.reset();
+                limpiarErrores();
+                // Asegurar que el input de contraseña vuelva a ser de tipo 'password'
+                passwordInput.setAttribute('type', 'password');
+                togglePassword.textContent = '👁️';
+            }
+            window.cerrarModal = cerrarModal; // Exponer la función globalmente si es necesario
+
+            btnNuevo.addEventListener('click', () => {
+                modoEdicion = false;
+                usuarioEditandoId = null;
+                form.reset();
+                limpiarErrores();
+                document.getElementById('modalTitulo').textContent = 'Registrar Usuario';
+                modal.classList.add('show');
+            });
+
+            btnCancelar.addEventListener('click', cerrarModal);
+
+            togglePassword.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+            });
+
+            // --- Lógica de Formulario y CRUD ---
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const nombreInput = document.getElementById('nombreCompleto');
+                const emailInput = document.getElementById('emailUsuario');
+                const rolInput = document.getElementById('rolUsuario');
+                const passwordInput = document.getElementById('passwordUsuario');
+
+                const nombre = nombreInput.value.trim();
+                const email = emailInput.value.trim();
+                const rol = rolInput.value;
+                const password = passwordInput.value.trim();
+
+                let valido = true;
+                
+                // Validaciones
+                if (nombre.length < 5) { showError(nombreInput, 'Nombre inválido (mínimo 5 caracteres)'); valido = false; } else showSuccess(nombreInput);
+                
+                if (!validarEmailInstitucional(email)) { showError(emailInput, 'Correo institucional inválido (debe ser @uleam.edu.ec)'); valido = false; } else showSuccess(emailInput);
+                
+                if (rol === '') { showError(rolInput, 'Seleccione un rol'); valido = false; } else showSuccess(rolInput);
+                
+                if (password.length < 8) { showError(passwordInput, 'Mínimo 8 caracteres'); valido = false; } else showSuccess(passwordInput);
+                
+                if (!valido) return;
+
+                // Lógica CRUD
+                if (modoEdicion && usuarioEditandoId !== null) {
+                    // EDITAR USUARIO
+                    const usuarioIndex = usuarios.findIndex(u => u.id === usuarioEditandoId);
+                    if (usuarioIndex !== -1) {
+                        usuarios[usuarioIndex].nombre = nombre;
+                        usuarios[usuarioIndex].email = email;
+                        usuarios[usuarioIndex].rol = rol;
+                        usuarios[usuarioIndex].fechaRegistro = new Date().toISOString(); // Actualizar fecha de modificación simulada
+                        // No se maneja la contraseña aquí para simplicidad, se asume que se actualizaría en el backend.
+                        alert('✅ Usuario actualizado correctamente');
+                    }
+                } else {
+                    // NUEVO USUARIO
+                    const id = Date.now();
+                    const nuevoUsuario = {
+                        id: id,
+                        nombre: nombre,
+                        email: email,
+                        rol: rol,
+                        estado: 'Activo',
+                        fechaRegistro: new Date().toISOString()
+                    };
+                    usuarios.push(nuevoUsuario);
+                    alert('✅ Usuario agregado correctamente');
+                }
+
+                renderizarTabla();
+                cerrarModal();
+            });
+
+            // --- Funciones de Acción de la Tabla (Comportamiento del primer código) ---
+
+            window.editarUsuario = (id) => {
+                const usuario = usuarios.find(u => u.id === id);
+                if (!usuario) return;
+
+                modoEdicion = true;
+                usuarioEditandoId = id;
+                limpiarErrores();
+
+                document.getElementById('nombreCompleto').value = usuario.nombre;
+                document.getElementById('emailUsuario').value = usuario.email;
+                document.getElementById('rolUsuario').value = usuario.rol;
+                document.getElementById('passwordUsuario').value = '********'; // Simulación de contraseña
+                document.getElementById('modalTitulo').textContent = 'Editar Usuario';
+                
+                // Opcional: Deshabilitar el cambio de contraseña en edición si solo se edita info
+                // passwordInput.required = false; 
+
+                modal.classList.add('show');
+            };
+
+            window.cambiarEstado = (id) => {
+                const usuario = usuarios.find(u => u.id === id);
+                if (!usuario) return;
+
+                const nuevoEstado = usuario.estado === 'Activo' ? 'Inactivo' : 'Activo';
+
+                if (confirm(`¿Desea cambiar el estado de ${usuario.nombre} a ${nuevoEstado}?`)) {
+                    usuario.estado = nuevoEstado;
+                    renderizarTabla();
+                    alert(`Estado de ${usuario.nombre} cambiado a ${nuevoEstado}`);
+                }
+            };
+
+            window.eliminarUsuario = (id) => {
+                const usuario = usuarios.find(u => u.id === id);
+                if (!usuario) return;
+
+                if (confirm(`¿Eliminar al usuario ${usuario.nombre}?`)) {
+                    usuarios = usuarios.filter(u => u.id !== id);
+                    renderizarTabla();
+                    alert('Usuario eliminado correctamente');
+                }
+            };
+            
+            // Renderizar la tabla al cargar la página
+            renderizarTabla();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login ULEAM</title>
+    <style>
+        /* Variables CSS */
+        :root {
+            --uleam-blue: #004AAD;
+            --uleam-blue-dark: #003880;
+            --error-color: #dc3545;
+            --success-color: #28a745;
+            --text-color: #333;
+            --border-color: #ddd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #dfe2e6 0%, #f9f9fa 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 60px;
+        }
+
+        .login-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-container img {
+            max-width: 180px;
+            height: auto;
+        }
+
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #004AAD;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.1);
+        }
+
+        .input-group input.error {
+            border-color: var(--error-color);
+            background: #fff5f5;
+        }
+
+        .input-group input.valid {
+            border-color: var(--success-color);
+            background: #f0fff4;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: #7f8c8d;
+            padding: 0;
+        }
+
+        .toggle-password:hover {
+            color: #004AAD;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        .remember input {
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            color: #004AAD;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        #btnLogin {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #004AAD 0%, #0066ff 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 74, 173, 0.3);
+        }
+
+        #btnLogin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 74, 173, 0.4);
+        }
+
+        #btnLogin:active {
+            transform: translateY(0);
+        }
+
+        #btnLogin:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        #btnLogin.success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+
+        #btnLogin.error {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <form id="loginForm">
+            <div class="logo-container">
+                <img src="logo-uleam.png" alt="Logo ULEAM" width="200">
+            </div>
+            
+            <h2>Sistema de Control Acceso Vehicular</h2>
+            
+            <div class="input-group">
+                <input type="text" id="usuario" 
+                       placeholder="Usuario o correo institucional"
+                       autocomplete="username">
+                <span class="error-message" id="usuarioError"></span>
+            </div>
+
+            <div class="input-group">
+                <div class="password-wrapper">
+                    <input type="password" id="password" 
+                           placeholder="Contraseña"
+                           autocomplete="current-password">
+                    <button type="button" id="togglePassword" class="toggle-password">👁️</button>
+                </div>
+                <span class="error-message" id="passwordError"></span>
+            </div>
+
+            <div class="options">
+                <label class="remember">
+                    <input type="checkbox" id="recordar">
+                    <span>Recordar sesión</span>
+                </label>
+                <a href="#" id="forgotPassword" class="forgot-link">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <button type="submit" id="btnLogin">Iniciar Sesión</button>
+        </form>
+    </div>
+    
+    <footer class="footer">
+        <p>© Universidad Laica Eloy Alfaro de Manabí</p>
+    </footer>
+
+    <script>
+        // Credenciales del sistema
+        const credentials = {
+            'admin@uleam.edu.ec': 'admin12345',
+            'admin': 'admin12345',
+            'guardia': 'guardia12345',
+            'guardia@uleam.edu.ec': 'guardia12345',
+            'supervisor@uleam.edu.ec': 'supervisor12345',
+            'supervisor': 'supervisor12345'
+        };
+
+        const form = document.getElementById('loginForm');
+        const usuarioInput = document.getElementById('usuario');
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        const btnLogin = document.getElementById('btnLogin');
+
+        // Validar email institucional
+        function validarEmail(email) {
+            const regex = /^[a-zA-Z0-9._-]+@uleam\.edu\.ec$/;
+            return regex.test(email);
+        }
+
+        // Mostrar error
+        function showError(input, message) {
+            input.classList.remove('valid');
+            input.classList.add('error');
+            const errorElement = document.getElementById(input.id + 'Error');
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+
+        // Mostrar éxito
+        function showSuccess(input) {
+            input.classList.remove('error');
+            input.classList.add('valid');
+            const errorElement = document.getElementById(input.id + 'Error');
+            errorElement.classList.remove('show');
+        }
+
+        // Validación en tiempo real - Usuario
+        usuarioInput.addEventListener('input', () => {
+            const value = usuarioInput.value.trim();
+            
+            if (!value) {
+                showError(usuarioInput, 'El usuario o correo es obligatorio');
+            } else if (value.includes('@')) {
+                if (!validarEmail(value)) {
+                    showError(usuarioInput, 'Debe usar un correo institucional (@uleam.edu.ec)');
+                } else {
+                    showSuccess(usuarioInput);
+                }
+            } else if (value.length < 3) {
+                showError(usuarioInput, 'El usuario debe tener al menos 3 caracteres');
+            } else {
+                showSuccess(usuarioInput);
+            }
+        });
+
+        // Validación en tiempo real - Contraseña
+        passwordInput.addEventListener('input', () => {
+            const value = passwordInput.value;
+            
+            if (!value) {
+                showError(passwordInput, 'La contraseña es obligatoria');
+            } else if (value.length < 8) {
+                showError(passwordInput, 'La contraseña debe tener al menos 8 caracteres');
+            } else {
+                showSuccess(passwordInput);
+            }
+        });
+
+        // Toggle mostrar/ocultar contraseña
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Recuperar contraseña
+        document.getElementById('forgotPassword').addEventListener('click', (e) => {
+            e.preventDefault();
+            const email = prompt('Ingrese su correo institucional (@uleam.edu.ec):');
+            
+            if (email) {
+                if (validarEmail(email)) {
+                    alert('✓ Se ha enviado un enlace de recuperación a: ' + email);
+                } else {
+                    alert('⚠ Por favor ingrese un correo institucional válido (@uleam.edu.ec)');
+                }
+            }
+        });
+
+        // Submit del formulario
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const usuario = usuarioInput.value.trim();
+            const password = passwordInput.value;
+            const recordarCheckbox = document.getElementById('recordar');
+            
+            // Verificar credenciales
+            if (credentials[usuario] && credentials[usuario] === password) {
+                localStorage.setItem('usuarioActivo', usuario);
+                localStorage.setItem('horaLogin', new Date().toLocaleString());
+                
+                if (recordarCheckbox.checked) {
+                    localStorage.setItem('recordarSesion', 'true');
+                }
+                
+                btnLogin.disabled = true;
+                btnLogin.textContent = '✓ Acceso concedido';
+                btnLogin.classList.add('success');
+                
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } else {
+                showError(passwordInput, 'Usuario o contraseña incorrectos');
+                btnLogin.classList.add('error');
+                btnLogin.textContent = '✗ Credenciales incorrectas';
+                
+                setTimeout(() => {
+                    btnLogin.classList.remove('error');
+                    btnLogin.textContent = 'Iniciar Sesión';
+                }, 2000);
+            }
+        });
+
+        // Cargar sesión guardada
+        if (localStorage.getItem('recordarSesion') === 'true' && localStorage.getItem('usuarioActivo')) {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Salida - Sistema ULEAM</title>
+    <style>
+        /* Variables CSS */
+        :root {
+            --uleam-blue: #004AAD;
+            --uleam-blue-dark: #003880;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --text-color: #2c3e50;
+            --light-gray: #f0f2f5;
+            --white: #ffffff;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+
+        /* HEADER PRINCIPAL */
+        .main-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            padding: 5px;
+        }
+
+        .main-header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* NAVEGACIÓN HORIZONTAL */
+        .nav-horizontal {
+            background: #2c3e50;
+            padding: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+        }
+
+        .nav-horizontal::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .nav-horizontal::-webkit-scrollbar-track {
+            background: #34495e;
+        }
+
+        .nav-horizontal::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 2px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 14px;
+            gap: 10px;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav-item .icon {
+            font-size: 18px;
+        }
+
+        .nav-item:hover {
+            background: #34495e;
+            border-bottom-color: #667eea;
+        }
+
+        .nav-item.active {
+            background: #34495e;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .content {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .content h2 {
+            font-size: 28px;
+            color: var(--text-color);
+            margin-bottom: 25px;
+        }
+
+        /* PASOS DE SALIDA */
+        .salida-step {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .step-header h3 {
+            color: var(--text-color);
+            font-size: 20px;
+        }
+
+        .search-vehicle {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .search-input-large {
+            flex: 1;
+            min-width: 250px;
+            padding: 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .search-input-large:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* TARJETA INFO VEHÍCULO */
+        .vehiculo-info-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            margin-bottom: 20px;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .vehiculo-info-card .step-number {
+            background: white;
+            color: #667eea;
+        }
+
+        .vehiculo-info-card h3 {
+            color: white;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-label {
+            display: block;
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .tiempo-destacado {
+            color: #ffd700;
+            font-size: 20px;
+        }
+
+        /* FORMULARIO */
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: var(--error-color);
+            background: #fff5f5;
+        }
+
+        .form-group input.valid {
+            border-color: var(--success-color);
+            background: #f0fff4;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        /* BOTONES */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-large {
+            padding: 15px 30px;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* TABLA */
+        .recent-records {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .recent-records h3 {
+            margin-bottom: 20px;
+            color: var(--text-color);
+            font-size: 18px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead {
+            background: #f8f9fa;
+        }
+
+        .data-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-color);
+            border-bottom: 2px solid #e1e8ed;
+            font-size: 14px;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 14px;
+        }
+
+        .data-table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .main-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .nav-horizontal {
+                justify-content: flex-start;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .search-vehicle {
+                flex-direction: column;
+            }
+
+            .search-input-large {
+                width: 100%;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .data-table {
+                font-size: 12px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Encabezado Principal -->
+    <header class="main-header">
+        <div class="header-left">
+            <img src="logo-uleam.png" alt="ULEAM" class="header-logo">
+            <h1>Sistema de Control Vehicular</h1>
+        </div>
+        <div class="header-right">
+            <span class="user-name">👤 Admin Usuario</span>
+            <button onclick="logout()" class="btn-logout">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <!-- Navegación Horizontal -->
+    <nav class="nav-horizontal">
+        <a href="dashboard.html" class="nav-item">
+            <span class="icon"></span> Dashboard
+        </a>
+        <a href="registro-ingreso.html" class="nav-item">
+            <span class="icon"></span> Registrar Ingreso
+        </a>
+        <a href="consulta-ingresos.html" class="nav-item">
+            <span class="icon"></span> Consultar Ingresos
+        </a>
+        <a href="registro-salida.html" class="nav-item active">
+            <span class="icon"></span> Registrar Salida
+        </a>
+        <a href="gestion-usuarios.html" class="nav-item">
+            <span class="icon"></span> Gestión de Usuarios
+        </a>
+        <a href="reportes.html" class="nav-item">
+            <span class="icon"></span> Reportes
+        </a>
+        <a href="vehiculos-registrados.html" class="nav-item">
+            <span class="icon"></span> Vehículos Registrados
+        </a>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="content">
+        <h2>Registro de Salida Vehicular</h2>
+        
+        <!-- Paso 1: Buscar vehículo -->
+        <div class="salida-step">
+            <div class="step-header">
+                <span class="step-number">1</span>
+                <h3>Buscar Vehículo</h3>
+            </div>
+            <div class="search-vehicle">
+                <input type="text" id="buscarPlaca" placeholder="Ingrese la placa del vehículo (Ej: ABC-123)" 
+                       class="search-input-large">
+                <button onclick="buscarVehiculo()" class="btn btn-primary btn-large">Buscar</button>
+            </div>
+        </div>
+
+        <!-- Paso 2: Información del vehículo encontrado -->
+        <div id="vehiculoInfo" class="vehiculo-info-card" style="display: none;">
+            <div class="step-header">
+                <span class="step-number">2</span>
+                <h3>Información del Vehículo</h3>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Placa:</span>
+                    <span class="info-value" id="infoPlaca">ABC-123</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Tipo:</span>
+                    <span class="info-value" id="infoTipo">Auto</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">ID Conductor:</span>
+                    <span class="info-value" id="infoID">1234567890</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">⏱ Hora Ingreso:</span>
+                    <span class="info-value" id="infoHoraIngreso">14:35:20</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Tiempo de Permanencia:</span>
+                    <span class="info-value tiempo-destacado" id="infoPermanencia">2 horas 15 min</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 3: Registrar salida -->
+        <div id="formSalida" class="form-container" style="display: none;">
+            <div class="step-header">
+                <span class="step-number">3</span>
+                <h3>Confirmar Salida</h3>
+            </div>
+            
+            <form id="salidaForm">
+                <div class="form-group">
+                    <label for="idSalida">ID del Conductor *</label>
+                    <input type="text" id="idSalida" name="idSalida" required 
+                           placeholder="ID del conductor" maxlength="10">
+                    <span class="error-message" id="idSalidaError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipoSalida">Tipo de Vehículo *</label>
+                    <input type="text" id="tipoSalida" name="tipoSalida" required readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="placaSalida">Placa del Vehículo *</label>
+                    <input type="text" id="placaSalida" name="placaSalida" required readonly>
+                </div>
+
+                <div class="alert alert-info">
+                    Hora de salida: <strong id="horaSalidaActual"></strong>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success btn-large">✓ Registrar Salida</button>
+                    <button type="button" onclick="cancelarSalida()" class="btn btn-danger">✗ Cancelar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Vehículos actualmente en el campus -->
+        <div class="recent-records">
+            <h3>Vehículos Actualmente en el Campus</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Placa</th>
+                        <th>Tipo</th>
+                        <th>Hora Ingreso</th>
+                        <th>Tiempo</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ABC-123</strong></td>
+                        <td>Auto</td>
+                        <td>14:35:20</td>
+                        <td>2h 15m</td>
+                        <td><button class="btn btn-sm btn-primary" onclick="seleccionarVehiculo('ABC-123')">Seleccionar</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>XYZ-789</strong></td>
+                        <td>Moto</td>
+                        <td>13:20:45</td>
+                        <td>3h 30m</td>
+                        <td><button class="btn btn-sm btn-primary" onclick="seleccionarVehiculo('XYZ-789')">Seleccionar</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>DEF-456</strong></td>
+                        <td>Camioneta</td>
+                        <td>12:15:30</td>
+                        <td>4h 35m</td>
+                        <td><button class="btn btn-sm btn-primary" onclick="seleccionarVehiculo('DEF-456')">Seleccionar</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // Función para cerrar sesión
+        function logout() {
+            if (confirm('¿Está seguro de cerrar sesión?')) {
+                localStorage.removeItem('usuarioActivo');
+                localStorage.removeItem('recordarSesion');
+                alert('✓ Sesión cerrada exitosamente');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Mostrar error
+        function showError(input, message) {
+            input.classList.remove('valid');
+            input.classList.add('error');
+            const errorElement = document.getElementById(input.id + 'Error');
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.classList.add('show');
+            }
+        }
+
+        // Mostrar éxito
+        function showSuccess(input) {
+            input.classList.remove('error');
+            input.classList.add('valid');
+            const errorElement = document.getElementById(input.id + 'Error');
+            if (errorElement) {
+                errorElement.classList.remove('show');
+            }
+        }
+
+        // Buscar vehículo por placa
+        function buscarVehiculo() {
+            const placa = document.getElementById('buscarPlaca').value.trim().toUpperCase();
+            
+            if (placa === '') {
+                alert('⚠ Por favor ingrese una placa');
+                return;
+            }
+
+            // Validar formato de placa
+            const placaRegex = /^[A-Z]{3}-[0-9]{3,4}$/;
+            if (!placaRegex.test(placa)) {
+                alert('⚠ Formato de placa incorrecto. Use: ABC-123 o ABC-1234');
+                return;
+            }
+
+            // Simular búsqueda - datos de ejemplo
+            const vehiculosRegistrados = {
+                'ABC-123': { tipo: 'Auto', id: '1234567890', horaIngreso: '14:35:20' },
+                'XYZ-789': { tipo: 'Moto', id: '9876543210', horaIngreso: '13:20:45' },
+                'DEF-456': { tipo: 'Camioneta', id: '5647382910', horaIngreso: '12:15:30' }
+            };
+
+            const vehiculo = vehiculosRegistrados[placa];
+            
+            if (!vehiculo) {
+                alert(' Vehículo no encontrado o no está dentro del campus');
+                return;
+            }
+
+            // Mostrar información
+            document.getElementById('infoPlaca').textContent = placa;
+            document.getElementById('infoTipo').textContent = vehiculo.tipo;
+            document.getElementById('infoID').textContent = vehiculo.id;
+            document.getElementById('infoHoraIngreso').textContent = vehiculo.horaIngreso;
+            document.getElementById('infoPermanencia').textContent = calcularPermanencia(vehiculo.horaIngreso);
+
+            // Mostrar secciones
+            document.getElementById('vehiculoInfo').style.display = 'block';
+            document.getElementById('formSalida').style.display = 'block';
+
+            // Llenar formulario
+            document.getElementById('idSalida').value = '';
+            document.getElementById('tipoSalida').value = vehiculo.tipo;
+            document.getElementById('placaSalida').value = placa;
+        }
+
+        // Seleccionar vehículo desde la tabla
+        function seleccionarVehiculo(placa) {
+            document.getElementById('buscarPlaca').value = placa;
+            buscarVehiculo();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Cancelar salida
+        function cancelarSalida() {
+            document.getElementById('buscarPlaca').value = '';
+            document.getElementById('vehiculoInfo').style.display = 'none';
+            document.getElementById('formSalida').style.display = 'none';
+            const form = document.getElementById('salidaForm');
+            if (form) form.reset();
+        }
+
+        // Calcular permanencia
+        function calcularPermanencia(horaIngreso) {
+            const ahora = new Date();
+            const [hora, minuto, segundo] = horaIngreso.split(':').map(Number);
+            
+            const ingreso = new Date();
+            ingreso.setHours(hora, minuto, segundo);
+            
+            const diff = ahora - ingreso;
+            const horas = Math.floor(diff / (1000 * 60 * 60));
+            const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            return `${horas}h ${minutos}m`;
+        }
+
+        // Actualizar hora de salida en tiempo real
+        function actualizarHoraSalida() {
+            const horaElement = document.getElementById('horaSalidaActual');
+            if (horaElement) {
+                const ahora = new Date();
+                horaElement.textContent = ahora.toLocaleTimeString('es-EC');
+            }
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            const usuarioActivo = localStorage.getItem('usuarioActivo');
+            const userNameElement = document.querySelector('.user-name');
+            
+            if (userNameElement && usuarioActivo) {
+                userNameElement.textContent = `👤 ${usuarioActivo}`;
+            }
+
+            // Actualizar hora actual
+            actualizarHoraSalida();
+            setInterval(actualizarHoraSalida, 1000);
+
+            // Validación en tiempo real del ID
+            const idSalida = document.getElementById('idSalida');
+            if (idSalida) {
+                idSalida.addEventListener('input', function() {
+                    // Solo números
+                    this.value = this.value.replace(/\D/g, '');
+                    
+                    // Limitar a 10 caracteres
+                    if (this.value.length > 10) {
+                        this.value = this.value.slice(0, 10);
+                    }
+                    
+                    const value = this.value.trim();
+                    
+                    if (!value) {
+                        this.classList.remove('valid', 'error');
+                        const errorElement = document.getElementById(this.id + 'Error');
+                        if (errorElement) errorElement.classList.remove('show');
+                    } else if (value.length < 10) {
+                        showError(this, 'El ID debe tener 10 dígitos');
+                    } else {
+                        showSuccess(this);
+                    }
+                });
+            }
+
+            // Submit del formulario
+            const salidaForm = document.getElementById('salidaForm');
+            if (salidaForm) {
+                salidaForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const idSalida = document.getElementById('idSalida').value.trim();
+                    const placaSalida = document.getElementById('placaSalida').value.trim();
+                    const infoID = document.getElementById('infoID').textContent;
+                    
+                    let isValid = true;
+
+                    // Validar ID
+                    if (!idSalida) {
+                        showError(document.getElementById('idSalida'), 'El ID es obligatorio');
+                        isValid = false;
+                    } else if (!/^\d{10}$/.test(idSalida)) {
+                        showError(document.getElementById('idSalida'), 'El ID debe tener exactamente 10 números');
+                        isValid = false;
+                    } else if (idSalida !== infoID) {
+                        showError(document.getElementById('idSalida'), 'El ID no coincide con el registrado');
+                        isValid = false;
+                    }
+                    
+                    if (isValid) {
+                        alert('✓ Salida registrada exitosamente\n\nPlaca: ' + placaSalida + '\nID: ' + idSalida + '\nHora: ' + document.getElementById('horaSalidaActual').textContent);
+                        cancelarSalida();
+                    }
+                });
+            }
+
+            // Auto-mayúsculas en input de placa
+            const buscarPlaca = document.getElementById('buscarPlaca');
+            if (buscarPlaca) {
+                buscarPlaca.addEventListener('input', function() {
+                    this.value = this.value.toUpperCase();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

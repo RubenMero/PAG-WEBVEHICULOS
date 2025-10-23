@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehículos Registrados - Sistema ULEAM</title>
+    <style>
+        /* Variables CSS */
+        :root {
+            --uleam-blue: #004AAD;
+            --uleam-blue-dark: #003880;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --warning-color: #f59e0b;
+            --info-color: #0ea5e9;
+            --text-color: #2c3e50;
+            --light-gray: #f0f2f5;
+            --white: #ffffff;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+
+        /* HEADER PRINCIPAL */
+        .main-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .main-header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* NAVEGACIÓN HORIZONTAL */
+        .nav-horizontal {
+            background: #2c3e50;
+            padding: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+        }
+
+        .nav-horizontal::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .nav-horizontal::-webkit-scrollbar-track {
+            background: #34495e;
+        }
+
+        .nav-horizontal::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 2px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 14px;
+            gap: 10px;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav-item .icon {
+            font-size: 18px;
+        }
+
+        .nav-item:hover {
+            background: #34495e;
+            border-bottom-color: #667eea;
+        }
+
+        .nav-item.active {
+            background: #34495e;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .content {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .content h2 {
+            font-size: 28px;
+            color: var(--text-color);
+            margin-bottom: 25px;
+        }
+
+        /* TOOLBAR */
+        .toolbar {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* BOTONES */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px 10px;
+            transition: all 0.2s;
+            color: #667eea;
+        }
+
+        .btn-icon:hover {
+            transform: scale(1.2);
+            color: #5568d3;
+        }
+
+        .btn-icon.btn-danger {
+            color: var(--error-color);
+        }
+
+        .btn-icon.btn-danger:hover {
+            color: #c0392b;
+        }
+
+        /* TABLA */
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .data-table thead {
+            background: #f8f9fa;
+        }
+
+        .data-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-color);
+            border-bottom: 2px solid #e1e8ed;
+            font-size: 14px;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 14px;
+        }
+
+        .data-table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .text-center {
+            text-align: center;
+            color: #95a5a6;
+            font-style: italic;
+        }
+
+        /* BADGES */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-admin {
+            background: #e8daff;
+            color: #5a1e8c;
+        }
+
+        /* PAGINACIÓN */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-page {
+            padding: 10px 15px;
+            border: 2px solid #e1e8ed;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .btn-page:hover:not(:disabled) {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .btn-page:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: 14px;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: scaleUp 0.3s ease-out;
+        }
+
+        @keyframes scaleUp {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #f0f2f5;
+            padding-bottom: 15px;
+        }
+
+        .modal-header h2 {
+            color: var(--text-color);
+            font-size: 22px;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #95a5a6;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: var(--error-color);
+        }
+
+        /* FORMULARIO */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: var(--error-color);
+            background: #fff5f5;
+        }
+
+        .form-group input.valid {
+            border-color: var(--success-color);
+            background: #f0fff4;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+            justify-content: flex-end;
+        }
+
+        /* NOTIFICACIÓN */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            animation: slideInRight 0.4s ease-out;
+            z-index: 1001;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        .notification.success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .notification.error {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .notification.warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .main-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .nav-horizontal {
+                justify-content: flex-start;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-filters {
+                flex-direction: column;
+            }
+
+            .search-input,
+            .filter-select {
+                width: 100%;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .data-table {
+                font-size: 12px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Encabezado Principal -->
+    <header class="main-header">
+        <div class="header-left">
+            <img src="logo-uleam.png" alt="ULEAM" class="header-logo">
+            <h1>Sistema de Control Vehicular</h1>
+        </div>
+        <div class="header-right">
+            <span class="user-name">👤 Admin Usuario</span>
+            <button onclick="logout()" class="btn-logout">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <!-- Navegación Horizontal -->
+    <nav class="nav-horizontal">
+        <a href="dashboard.html" class="nav-item">
+            <span class="icon"></span> Dashboard
+        </a>
+        <a href="registro-ingreso.html" class="nav-item">
+            <span class="icon"></span> Registrar Ingreso
+        </a>
+        <a href="consulta-ingresos.html" class="nav-item">
+            <span class="icon"></span> Consultar Ingresos
+        </a>
+        <a href="registro-salida.html" class="nav-item">
+            <span class="icon"></span> Registrar Salida
+        </a>
+        <a href="gestion-usuarios.html" class="nav-item">
+            <span class="icon"></span> Gestión de Usuarios
+        </a>
+        <a href="reportes.html" class="nav-item">
+            <span class="icon"></span> Reportes
+        </a>
+        <a href="vehiculos-registrados.html" class="nav-item active">
+            <span class="icon"></span> Vehículos Registrados
+        </a>
+    </nav>
+
+    <!-- Notificación -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Contenido Principal -->
+    <main class="content">
+        <h2>Vehículos Registrados</h2>
+        
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <button onclick="mostrarModalVehiculo()" class="btn btn-success">Registrar Nuevo Vehículo</button>
+            
+            <div class="search-filters">
+                <input type="text" id="buscarVehiculo" placeholder="Buscar por placa o propietario..." class="search-input">
+                
+                <select id="filtroTipoVeh" class="filter-select" onchange="filtrarVehiculos()">
+                    <option value="">Todos los tipos</option>
+                    <option value="Auto">Auto</option>
+                    <option value="Moto">Moto</option>
+                    <option value="Camioneta">Camioneta</option>
+                    <option value="Otro">Otro</option>
+                </select>
+                
+                <select id="filtroEstadoVeh" class="filter-select" onchange="filtrarVehiculos()">
+                    <option value="">Todos los estados</option>
+                    <option value="Autorizado">Autorizado</option>
+                    <option value="Suspendido">Suspendido</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tabla de vehículos -->
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Placa</th>
+                        <th>Propietario</th>
+                        <th>Tipo Usuario</th>
+                        <th>Color</th>
+                        <th>Marca / Modelo</th>
+                        <th>Fecha Registro</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaVehiculos">
+                    <tr>
+                        <td colspan="8" class="text-center">Cargando vehículos...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination">
+            <button class="btn-page" id="btnPrev" onclick="cambiarPagina(-1)">« Anterior</button>
+            <span class="page-info" id="pageInfo">Página 1 de 1</span>
+            <button class="btn-page" id="btnNext" onclick="cambiarPagina(1)">Siguiente »</button>
+        </div>
+    </main>
+
+    <!-- Modal para agregar/editar vehículo -->
+    <div id="modalVehiculo" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTituloVeh">Registrar Nuevo Vehículo</h2>
+                <button onclick="cerrarModalVehiculo()" class="close-btn">✖</button>
+            </div>
+            
+            <form id="vehiculoForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="placaVeh">Placa *</label>
+                        <input type="text" id="placaVeh" required style="text-transform: uppercase;" placeholder="ABC-1234">
+                        <span class="error-message" id="placaVehError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="propietarioVeh">Propietario *</label>
+                        <input type="text" id="propietarioVeh" required placeholder="Nombre completo">
+                        <span class="error-message" id="propietarioError"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tipoUsuarioVeh">Tipo de Usuario *</label>
+                        <select id="tipoUsuarioVeh" required>
+                            <option value="">Seleccione</option>
+                            <option value="Estudiante">Estudiante</option>
+                            <option value="Docente">Docente</option>
+                            <option value="Administrativo">Administrativo</option>
+                            <option value="Visitante">Visitante</option>
+                        </select>
+                        <span class="error-message" id="tipoUsuarioError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="colorVeh">Color</label>
+                        <input type="text" id="colorVeh" placeholder="Color del vehículo">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="marcaModeloVeh">Marca / Modelo *</label>
+                    <input type="text" id="marcaModeloVeh" required placeholder="Ej: Toyota Corolla">
+                    <span class="error-message" id="marcaError"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" onclick="cerrarModalVehiculo()" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Guardar Vehículo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Datos de vehículos (simulación de base de datos)
+        let vehiculos = [
+            {
+                id: 1,
+                placa: 'ABC-1234',
+                propietario: 'Juan Pérez García',
+                tipoUsuario: 'Docente',
+                color: 'Blanco',
+                marcaModelo: 'Toyota Corolla',
+                fechaRegistro: '2024-08-15',
+                estado: 'Autorizado'
+            },
+            {
+                id: 2,
+                placa: 'XYZ-7890',
+                propietario: 'María López Santos',
+                tipoUsuario: 'Estudiante',
+                color: 'Negro',
+                marcaModelo: 'Honda CB 150',
+                fechaRegistro: '2024-09-20',
+                estado: 'Autorizado'
+            },
+            {
+                id: 3,
+                placa: 'DEF-4567',
+                propietario: 'Carlos Ramírez Cruz',
+                tipoUsuario: 'Administrativo',
+                color: 'Gris',
+                marcaModelo: 'Chevrolet D-Max',
+                fechaRegistro: '2024-07-10',
+                estado: 'Suspendido'
+            }
+        ];
+
+        let vehiculosFiltrados = [...vehiculos];
+        let paginaActual = 1;
+        const vehiculosPorPagina = 10;
+        let modoEdicion = false;
+        let vehiculoEditandoId = null;
+
+        // Función para cerrar sesión
+        function logout() {
+            if (confirm('¿Está seguro de cerrar sesión?')) {
+                showNotification('✓ Sesión cerrada exitosamente', 'success');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+            }
+        }
+
+        // Mostrar notificación
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Mostrar error en formulario
+        function showError(input, message) {
+            input.classList.remove('valid');
+            input.classList.add('error');
+            const errorElement = document.getElementById(input.id + 'Error');
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.classList.add('show');
+            }
+        }
+
+        // Mostrar éxito en formulario
+        function showSuccess(input) {
+            input.classList.remove('error');
+            input.classList.add('valid');
+            const errorElement = document.getElementById(input.id + 'Error');
+            if (errorElement) {
+                errorElement.classList.remove('show');
+            }
+        }
+
+        // Limpiar validación
+        function clearValidation(input) {
+            input.classList.remove('error', 'valid');
+            const errorElement = document.getElementById(input.id + 'Error');
+            if (errorElement) {
+                errorElement.classList.remove('show');
+            }
+        }
+
+        // Renderizar tabla de vehículos
+        function renderizarTabla() {
+            const tbody = document.getElementById('tablaVehiculos');
+            tbody.innerHTML = '';
+
+            if (vehiculosFiltrados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center">No se encontraron vehículos</td></tr>';
+                actualizarPaginacion();
+                return;
+            }
+
+            const inicio = (paginaActual - 1) * vehiculosPorPagina;
+            const fin = inicio + vehiculosPorPagina;
+            const vehiculosPagina = vehiculosFiltrados.slice(inicio, fin);
+
+            vehiculosPagina.forEach(vehiculo => {
+                const tr = document.createElement('tr');
+                
+                const badgeTipo = getBadgeTipoUsuario(vehiculo.tipoUsuario);
+                const badgeEstado = vehiculo.estado === 'Autorizado' 
+                    ? '<span class="badge badge-success">Autorizado</span>'
+                    : '<span class="badge badge-danger">Suspendido</span>';
+
+                tr.innerHTML = `
+                    <td><strong>${vehiculo.placa}</strong></td>
+                    <td>${vehiculo.propietario}</td>
+                    <td>${badgeTipo}</td>
+                    <td>${vehiculo.color || '-'}</td>
+                    <td>${vehiculo.marcaModelo}</td>
+                    <td>${formatearFecha(vehiculo.fechaRegistro)}</td>
+                    <td>${badgeEstado}</td>
+                    <td>
+                        <button class="btn-icon" onclick="editarVehiculo(${vehiculo.id})" title="Editar">✏️</button>
+                        <button class="btn-icon" onclick="cambiarEstadoVeh(${vehiculo.id})" title="${vehiculo.estado === 'Autorizado' ? 'Suspender' : 'Activar'}">
+                            ${vehiculo.estado === 'Autorizado' ? '⏸' : '▶'}
+                        </button>
+                        <button class="btn-icon btn-danger" onclick="eliminarVehiculo(${vehiculo.id})" title="Eliminar">🗑️</button>
+                    </td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+
+            actualizarPaginacion();
+        }
+
+        // Obtener badge según tipo de usuario
+        function getBadgeTipoUsuario(tipo) {
+            const badges = {
+                'Estudiante': '<span class="badge badge-warning">Estudiante</span>',
+                'Docente': '<span class="badge badge-info">Docente</span>',
+                'Administrativo': '<span class="badge badge-admin">Administrativo</span>',
+                'Visitante': '<span class="badge badge-secondary">Visitante</span>'
+            };
+            return badges[tipo] || tipo;
+        }
+
+        // Formatear fecha
+        function formatearFecha(fecha) {
+            const date = new Date(fecha);
+            return date.toLocaleDateString('es-EC');
+        }
+
+        // Actualizar paginación
+        function actualizarPaginacion() {
+            const totalPaginas = Math.ceil(vehiculosFiltrados.length / vehiculosPorPagina);
+            document.getElementById('pageInfo').textContent = `Página ${paginaActual} de ${totalPaginas}`;
+            
+            document.getElementById('btnPrev').disabled = paginaActual === 1;
+            document.getElementById('btnNext').disabled = paginaActual >= totalPaginas;
+        }
+
+        // Cambiar página
+        function cambiarPagina(direccion) {
+            const totalPaginas = Math.ceil(vehiculosFiltrados.length / vehiculosPorPagina);
+            const nuevaPagina = paginaActual + direccion;
+            
+            if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
+                paginaActual = nuevaPagina;
+                renderizarTabla();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Filtrar vehículos
+        function filtrarVehiculos() {
+            const busqueda = document.getElementById('buscarVehiculo').value.toLowerCase();
+            const filtroTipo = document.getElementById('filtroTipoVeh').value;
+            const filtroEstado = document.getElementById('filtroEstadoVeh').value;
+
+            vehiculosFiltrados = vehiculos.filter(vehiculo => {
+                const coincideBusqueda = vehiculo.placa.toLowerCase().includes(busqueda) ||
+                                        vehiculo.propietario.toLowerCase().includes(busqueda);
+                const coincideTipo = !filtroTipo || vehiculo.tipoUsuario === filtroTipo;
+                const coincideEstado = !filtroEstado || vehiculo.estado === filtroEstado;
+
+                return coincideBusqueda && coincideTipo && coincideEstado;
+            });
+
+            paginaActual = 1;
+            renderizarTabla();
+        }
+
+        // Mostrar modal para nuevo vehículo
+        function mostrarModalVehiculo() {
+            modoEdicion = false;
+            vehiculoEditandoId = null;
+            document.getElementById('modalTituloVeh').textContent = 'Registrar Nuevo Vehículo';
+            document.getElementById('vehiculoForm').reset();
+            limpiarErroresForm();
+            document.getElementById('modalVehiculo').classList.add('show');
+        }
+
+        // Cerrar modal
+        function cerrarModalVehiculo() {
+            document.getElementById('modalVehiculo').classList.remove('show');
+            document.getElementById('vehiculoForm').reset();
+            limpiarErroresForm();
+        }
+
+        // Limpiar errores del formulario
+        function limpiarErroresForm() {
+            document.querySelectorAll('#vehiculoForm input, #vehiculoForm select').forEach(input => {
+                input.classList.remove('error', 'valid');
+            });
+            document.querySelectorAll('#vehiculoForm .error-message').forEach(error => {
+                error.classList.remove('show');
+            });
+        }
+
+        // Editar vehículo
+        function editarVehiculo(id) {
+            const vehiculo = vehiculos.find(v => v.id === id);
+            if (!vehiculo) return;
+
+            modoEdicion = true;
+            vehiculoEditandoId = id;
+            
+            document.getElementById('modalTituloVeh').textContent = 'Editar Vehículo';
+            document.getElementById('placaVeh').value = vehiculo.placa;
+            document.getElementById('propietarioVeh').value = vehiculo.propietario;
+            document.getElementById('tipoUsuarioVeh').value = vehiculo.tipoUsuario;
+            document.getElementById('colorVeh').value = vehiculo.color || '';
+            document.getElementById('marcaModeloVeh').value = vehiculo.marcaModelo;
+            
+            limpiarErroresForm();
+            document.getElementById('modalVehiculo').classList.add('show');
+        }
+
+        // Cambiar estado del vehículo
+        function cambiarEstadoVeh(id) {
+            const vehiculo = vehiculos.find(v => v.id === id);
+            if (!vehiculo) return;
+
+            const nuevoEstado = vehiculo.estado === 'Autorizado' ? 'Suspendido' : 'Autorizado';
+            const accion = nuevoEstado === 'Suspendido' ? 'suspender' : 'activar';
+
+            if (confirm(`¿Desea ${accion} el vehículo con placa ${vehiculo.placa}?`)) {
+                vehiculo.estado = nuevoEstado;
+                renderizarTabla();
+                showNotification(`✓ Estado del vehículo ${vehiculo.placa} cambiado a ${nuevoEstado}`, 'success');
+            }
+        }
+
+        // Eliminar vehículo
+        function eliminarVehiculo(id) {
+            const vehiculo = vehiculos.find(v => v.id === id);
+            if (!vehiculo) return;
+
+            if (confirm(`⚠ ¿Está seguro de eliminar el vehículo con placa ${vehiculo.placa}?\nEsta acción no se puede deshacer.`)) {
+                const index = vehiculos.findIndex(v => v.id === id);
+                vehiculos.splice(index, 1);
+                filtrarVehiculos();
+                showNotification(`✓ Vehículo ${vehiculo.placa} eliminado correctamente`, 'success');
+            }
+        }
+
+        // Validación en tiempo real
+        function setupValidacionTiempoReal() {
+            // Validar placa
+            const placaInput = document.getElementById('placaVeh');
+            placaInput.addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+                const placaRegex = /^[A-Z]{3}-[0-9]{3,4}$/;
+                
+                if (!this.value) {
+                    clearValidation(this);
+                } else if (placaRegex.test(this.value)) {
+                    showSuccess(this);
+                } else {
+                    showError(this, 'Formato: ABC-1234');
+                }
+            });
+
+            // Validar propietario
+            const propietarioInput = document.getElementById('propietarioVeh');
+            propietarioInput.addEventListener('input', function() {
+                if (!this.value) {
+                    clearValidation(this);
+                } else if (this.value.trim().length < 3) {
+                    showError(this, 'Mínimo 3 caracteres');
+                } else {
+                    showSuccess(this);
+                }
+            });
+
+            // Validar tipo de usuario
+            const tipoUsuarioSelect = document.getElementById('tipoUsuarioVeh');
+            tipoUsuarioSelect.addEventListener('change', function() {
+                if (this.value) {
+                    showSuccess(this);
+                } else {
+                    clearValidation(this);
+                }
+            });
+
+            // Validar marca/modelo
+            const marcaModeloInput = document.getElementById('marcaModeloVeh');
+            marcaModeloInput.addEventListener('input', function() {
+                if (!this.value) {
+                    clearValidation(this);
+                } else if (this.value.trim().length < 3) {
+                    showError(this, 'Mínimo 3 caracteres');
+                } else {
+                    showSuccess(this);
+                }
+            });
+        }
+
+        // Submit del formulario
+        document.getElementById('vehiculoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const placa = document.getElementById('placaVeh').value.trim().toUpperCase();
+            const propietario = document.getElementById('propietarioVeh').value.trim();
+            const tipoUsuario = document.getElementById('tipoUsuarioVeh').value;
+            const color = document.getElementById('colorVeh').value.trim();
+            const marcaModelo = document.getElementById('marcaModeloVeh').value.trim();
+
+            let isValid = true;
+
+            // Validar placa
+            const placaRegex = /^[A-Z]{3}-[0-9]{3,4}$/;
+            const placaInput = document.getElementById('placaVeh');
+            if (!placa) {
+                showError(placaInput, 'La placa es obligatoria');
+                isValid = false;
+            } else if (!placaRegex.test(placa)) {
+                showError(placaInput, 'Formato incorrecto: ABC-1234');
+                isValid = false;
+            } else {
+                // Verificar si la placa ya existe (solo en modo creación o si cambió la placa)
+                const placaExistente = vehiculos.find(v => v.placa === placa && (!modoEdicion || v.id !== vehiculoEditandoId));
+                if (placaExistente) {
+                    showError(placaInput, 'Esta placa ya está registrada');
+                    isValid = false;
+                }
+            }
+
+            // Validar propietario
+            const propietarioInput = document.getElementById('propietarioVeh');
+            if (!propietario) {
+                showError(propietarioInput, 'El propietario es obligatorio');
+                isValid = false;
+            } else if (propietario.length < 3) {
+                showError(propietarioInput, 'Mínimo 3 caracteres');
+                isValid = false;
+            }
+
+            // Validar tipo de usuario
+            const tipoUsuarioInput = document.getElementById('tipoUsuarioVeh');
+            if (!tipoUsuario) {
+                showError(tipoUsuarioInput, 'Debe seleccionar un tipo');
+                isValid = false;
+            }
+
+            // Validar marca/modelo
+            const marcaModeloInput = document.getElementById('marcaModeloVeh');
+            if (!marcaModelo) {
+                showError(marcaModeloInput, 'La marca/modelo es obligatoria');
+                isValid = false;
+            } else if (marcaModelo.length < 3) {
+                showError(marcaModeloInput, 'Mínimo 3 caracteres');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // Guardar vehículo
+            if (modoEdicion && vehiculoEditandoId !== null) {
+                // Editar vehículo existente
+                const vehiculo = vehiculos.find(v => v.id === vehiculoEditandoId);
+                if (vehiculo) {
+                    vehiculo.placa = placa;
+                    vehiculo.propietario = propietario;
+                    vehiculo.tipoUsuario = tipoUsuario;
+                    vehiculo.color = color;
+                    vehiculo.marcaModelo = marcaModelo;
+                    showNotification(`✓ Vehículo ${placa} actualizado correctamente`, 'success');
+                }
+            } else {
+                // Crear nuevo vehículo
+                const nuevoVehiculo = {
+                    id: Date.now(),
+                    placa: placa,
+                    propietario: propietario,
+                    tipoUsuario: tipoUsuario,
+                    color: color,
+                    marcaModelo: marcaModelo,
+                    fechaRegistro: new Date().toISOString().split('T')[0],
+                    estado: 'Autorizado'
+                };
+                vehiculos.unshift(nuevoVehiculo);
+                showNotification(`✓ Vehículo ${placa} registrado exitosamente`, 'success');
+            }
+
+            filtrarVehiculos();
+            cerrarModalVehiculo();
+        });
+
+        // Búsqueda en tiempo real
+        document.getElementById('buscarVehiculo').addEventListener('input', filtrarVehiculos);
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('modalVehiculo').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cerrarModalVehiculo();
+            }
+        });
+
+        // Atajos de teclado
+        document.addEventListener('keydown', function(e) {
+            // ESC para cerrar modal
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('modalVehiculo');
+                if (modal.classList.contains('show')) {
+                    cerrarModalVehiculo();
+                }
+            }
+
+            // Ctrl/Cmd + N para nuevo vehículo
+            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                e.preventDefault();
+                mostrarModalVehiculo();
+            }
+
+            // Ctrl/Cmd + F para buscar
+            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                e.preventDefault();
+                document.getElementById('buscarVehiculo').focus();
+            }
+        });
+
+        // Exportar vehículos a CSV
+        function exportarCSV() {
+            const headers = ['Placa', 'Propietario', 'Tipo Usuario', 'Color', 'Marca/Modelo', 'Fecha Registro', 'Estado'];
+            const rows = vehiculosFiltrados.map(v => [
+                v.placa,
+                v.propietario,
+                v.tipoUsuario,
+                v.color || '',
+                v.marcaModelo,
+                v.fechaRegistro,
+                v.estado
+            ]);
+
+            let csvContent = headers.join(',') + '\n';
+            rows.forEach(row => {
+                csvContent += row.map(cell => `"${cell}"`).join(',') + '\n';
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `vehiculos_registrados_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showNotification('✓ Vehículos exportados a CSV', 'success');
+        }
+
+        // Agregar botón de exportar (opcional)
+        window.exportarCSV = exportarCSV;
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Actualizar nombre de usuario
+            const usuarioActivo = localStorage.getItem('usuarioActivo');
+            const userNameElement = document.querySelector('.user-name');
+            if (userNameElement && usuarioActivo) {
+                userNameElement.textContent = `👤 ${usuarioActivo}`;
+            }
+
+            // Configurar validación en tiempo real
+            setupValidacionTiempoReal();
+
+            // Renderizar tabla inicial
+            renderizarTabla();
+
+            // Agregar animación de carga
+            setTimeout(() => {
+                document.getElementById('tablaVehiculos').style.opacity = '1';
+            }, 100);
+
+            console.log('✓ Sistema de Vehículos Registrados inicializado correctamente');
+        });
+    </script>
+</body>
+</html>
